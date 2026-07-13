@@ -1,5 +1,6 @@
 import St from "gi://St";
 import Clutter from "gi://Clutter";
+import Gdk from "gi://Gdk";
 import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import NM from "gi://NM";
@@ -56,7 +57,7 @@ export default class IPIndicatorExtension extends Extension {
     this._indicator.menu.addMenuItem(this._refreshItem);
     this._indicator.menu.addMenuItem(this._copyItem);
 
-    Main.panel.addToStatusArea("ip-indicator", this._indicator);
+    Main.panel.addToStatusArea("ip-indicator-arnavk-09", this._indicator);
 
     this._applyStyles();
 
@@ -110,15 +111,34 @@ export default class IPIndicatorExtension extends Extension {
   }
 
   _applyStyles() {
-    if (!this._box) return;
+    if (!this._box || !this._settings) return;
 
     const textColor = this._settings.get_string("text-color");
+    const safeTextColor = this._parseColor(textColor)
+      ? textColor
+      : "rgba(255, 255, 255, 1)";
+
+    const backgroundColor = this._settings.get_string("background-color");
+    const safeBgColor = this._parseColor(backgroundColor)
+      ? backgroundColor
+      : "transparent";
+
+    const backgroundStyle =
+      safeBgColor === "transparent"
+        ? ""
+        : `background-color: ${safeBgColor}; padding: 0 8px;`;
 
     this._box.set_style(`
-            color: ${textColor};
+            color: ${safeTextColor};
+            ${backgroundStyle}
             border-radius: 14px;
             margin: 4px 0;
         `);
+  }
+
+  _parseColor(color) {
+    const rgba = new Gdk.RGBA();
+    return rgba.parse(color);
   }
 
   _setOffline() {
@@ -165,6 +185,8 @@ export default class IPIndicatorExtension extends Extension {
           this,
         );
 
+        if (!this._label || !this._nmClient) return;
+
         for (const device of this._nmClient.get_devices())
           this._trackDevice(device);
       })
@@ -190,6 +212,8 @@ export default class IPIndicatorExtension extends Extension {
   }
 
   _scheduleNetworkRefresh() {
+    if (!this._label) return;
+
     if (this._networkRefreshId) GLib.source_remove(this._networkRefreshId);
 
     this._networkRefreshId = GLib.timeout_add_seconds(
@@ -197,14 +221,14 @@ export default class IPIndicatorExtension extends Extension {
       2,
       () => {
         this._networkRefreshId = null;
-        this._updateIP(true);
+        if (this._label) this._updateIP(true);
         return GLib.SOURCE_REMOVE;
       },
     );
   }
 
   async _updateIP(manually = false) {
-    if (!this._label) return;
+    if (!this._label || !this._settings) return;
 
     this._fetchCancellable?.cancel();
     const cancellable = new Gio.Cancellable();
@@ -231,7 +255,7 @@ export default class IPIndicatorExtension extends Extension {
         this._session.timeout = FETCH_TIMEOUT_SECONDS;
       }
 
-      const useIPv6 = this._settings.get_string("ip-version") === "ipv6";
+      const useIPv6 = this._settings?.get_string("ip-version") === "ipv6";
       const url = useIPv6
         ? "https://ipv6.icanhazip.com"
         : "https://ipv4.icanhazip.com";

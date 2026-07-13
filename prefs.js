@@ -37,9 +37,8 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     const bgEntry = new Gtk.Entry({
       text: settings.get_string("background-color"),
-      width_chars: 12,
-      hexpand: true,
-      max_width_chars: 18,
+      width_chars: 10,
+      max_width_chars: 14,
       valign: Gtk.Align.CENTER,
     });
 
@@ -48,9 +47,15 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
       use_alpha: true,
     });
 
+    const resetBgButton = new Gtk.Button({
+      icon_name: "edit-clear-symbolic",
+      valign: Gtk.Align.CENTER,
+      tooltip_text: "Reset background to transparent",
+    });
+
     let rgbaBg = new Gdk.RGBA();
-    rgbaBg.parse(settings.get_string("background-color"));
-    bgButton.set_rgba(rgbaBg);
+    const currentBg = settings.get_string("background-color");
+    if (rgbaBg.parse(currentBg)) bgButton.set_rgba(rgbaBg);
 
     bgEntry.connect("changed", () => {
       const text = bgEntry.get_text();
@@ -67,8 +72,17 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
       settings.set_string("background-color", color);
     });
 
+    resetBgButton.connect("clicked", () => {
+      settings.set_string("background-color", "transparent");
+      bgEntry.set_text("transparent");
+      let rgba = new Gdk.RGBA();
+      rgba.parse("rgba(255, 255, 255, 0)");
+      bgButton.set_rgba(rgba);
+    });
+
     bgBox.append(bgEntry);
     bgBox.append(bgButton);
+    bgBox.append(resetBgButton);
     bgRow.add_suffix(bgBox);
     stylingGroup.add(bgRow);
 
@@ -86,9 +100,8 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     const textEntry = new Gtk.Entry({
       text: settings.get_string("text-color"),
-      width_chars: 12,
-      hexpand: true,
-      max_width_chars: 18,
+      width_chars: 10,
+      max_width_chars: 14,
       valign: Gtk.Align.CENTER,
     });
 
@@ -123,7 +136,7 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     // Presets Row
     const presetRow = new Adw.ActionRow({
-      title: "Professional Color Presets",
+      title: "Color Presets",
       subtitle: "Quickly select from one of these elegant color themes",
     });
 
@@ -152,11 +165,6 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
         name: "Sleek Dark",
         bg: "rgba(45, 45, 45, 0.85)",
         text: "rgba(240, 240, 240, 1)",
-      },
-      {
-        name: "Emerald",
-        bg: "rgba(46, 194, 126, 1)",
-        text: "rgba(255, 255, 255, 1)",
       },
       {
         name: "Warm Amber",
@@ -192,37 +200,9 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
     // Group 2: Behavior
     const behaviorGroup = new Adw.PreferencesGroup({
       title: "Behavior",
-      description: "Configure update frequency and other settings",
+      description: "Configure network-based IP detection behavior",
     });
     page.add(behaviorGroup);
-
-    const intervalRow = new Adw.ActionRow({
-      title: "Update Interval (seconds)",
-      subtitle: "Frequency of IP updates (minimum 30 seconds)",
-    });
-
-    const intervalAdjustment = new Gtk.Adjustment({
-      lower: 30,
-      upper: 3600,
-      step_increment: 10,
-      page_increment: 60,
-      value: settings.get_int("update-interval"),
-    });
-
-    const intervalSpinButton = new Gtk.SpinButton({
-      adjustment: intervalAdjustment,
-      valign: Gtk.Align.CENTER,
-      numeric: true,
-    });
-
-    intervalSpinButton.connect("value-changed", () => {
-      settings.set_int(
-        "update-interval",
-        intervalSpinButton.get_value_as_int(),
-      );
-    });
-    intervalRow.add_suffix(intervalSpinButton);
-    behaviorGroup.add(intervalRow);
 
     // IP Version Row
     const ipVersionRow = new Adw.ComboRow({

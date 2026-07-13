@@ -2,16 +2,13 @@
 <schemalist>
   <schema id="org.gnome.shell.extensions.ip-indicator" path="/org/gnome/shell/extensions/ip-indicator/">
     <key name="background-color" type="s">
-      <default>'rgba(53, 132, 228, 1)'</default>
+      <default>'transparent'</default>
       <summary>Background color</summary>
+      <description>Background color of the indicator pill. Set to 'transparent' to use the default GNOME panel look.</description>
     </key>
     <key name="text-color" type="s">
       <default>'rgba(255, 255, 255, 1)'</default>
       <summary>Text color</summary>
-    </key>
-    <key name="update-interval" type="i">
-      <default>300</default>
-      <summary>Update interval in seconds</summary>
     </key>
     <key name="ip-version" type="s">
       <default>'ipv4'</default>
