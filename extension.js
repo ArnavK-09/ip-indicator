@@ -1,6 +1,5 @@
 import St from "gi://St";
 import Clutter from "gi://Clutter";
-import Gdk from "gi://Gdk";
 import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import NM from "gi://NM";
@@ -103,6 +102,8 @@ export default class IPIndicatorExtension extends Extension {
     this._indicator?.destroy();
     this._indicator = null;
 
+    this._trackedDevices = null;
+
     this._box = null;
     this._label = null;
     this._refreshItem = null;
@@ -114,14 +115,10 @@ export default class IPIndicatorExtension extends Extension {
     if (!this._box || !this._settings) return;
 
     const textColor = this._settings.get_string("text-color");
-    const safeTextColor = this._parseColor(textColor)
-      ? textColor
-      : "rgba(255, 255, 255, 1)";
+    const safeTextColor = textColor || "rgba(255, 255, 255, 1)";
 
     const backgroundColor = this._settings.get_string("background-color");
-    const safeBgColor = this._parseColor(backgroundColor)
-      ? backgroundColor
-      : "transparent";
+    const safeBgColor = backgroundColor || "transparent";
 
     this._box.set_style(`
             color: ${safeTextColor};
@@ -134,11 +131,6 @@ export default class IPIndicatorExtension extends Extension {
             border-radius: 14px;
             padding: 1px 8px;
         `);
-  }
-
-  _parseColor(color) {
-    const rgba = new Gdk.RGBA();
-    return rgba.parse(color);
   }
 
   _setOffline() {
@@ -194,9 +186,10 @@ export default class IPIndicatorExtension extends Extension {
   }
 
   _trackDevice(device) {
-    if (device._ipIndicatorTracked) return;
+    this._trackedDevices ??= new WeakSet();
+    if (this._trackedDevices.has(device)) return;
 
-    device._ipIndicatorTracked = true;
+    this._trackedDevices.add(device);
     device.connectObject(
       "state-changed",
       () => this._scheduleNetworkRefresh(),
@@ -205,10 +198,10 @@ export default class IPIndicatorExtension extends Extension {
   }
 
   _untrackDevice(device) {
-    if (!device._ipIndicatorTracked) return;
+    if (!this._trackedDevices?.has(device)) return;
 
     device.disconnectObject(this);
-    delete device._ipIndicatorTracked;
+    this._trackedDevices.delete(device);
   }
 
   _scheduleNetworkRefresh() {

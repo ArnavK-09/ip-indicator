@@ -1,7 +1,7 @@
 {
   "uuid": "ip-indicator@ArnavK-09",
-  "name": "IP Indicator",
-  "description": "Display your public IP in Gnome topbar...",
+  "name": "IP Indicator by ArnavK-09",
+  "description": "Display your public IP address in the GNOME top panel. Choose between IPv4 and IPv6, refresh manually, and copy the address to the clipboard.",
   "shell-version": ["45", "46", "47", "48", "49", "50"],
   "settings-schema": "org.gnome.shell.extensions.ip-indicator",
   "url": "https://github.com/ArnavK-09/ip-indicator"

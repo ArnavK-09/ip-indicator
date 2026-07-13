@@ -2,10 +2,10 @@
     <img alt="hero" width="450" src="https://emoji-route.deno.dev/png/🛜" />
 </p>
 
-<h1 align="center">IP Indicator</h1>
+<h1 align="center">IP Indicator by ArnavK-09</h1>
 
 <p align="center">
-    Display your public IP in Gnome topbar
+    Display your public IP address in the GNOME top panel
 </p>
 
 <p align="center">
@@ -25,7 +25,7 @@ This is a fork of the <a href="https://github.com/vjects/ip-indicator">original 
 - **IPv4 / IPv6 Toggle:** Choose whether to display your public IPv4 or IPv6 address from the settings.
 - **State-Based IP Monitoring:** Refreshes your IP when network connectivity, primary connection, wireless state, or device state changes — no wasteful polling.
 - **Manual Refresh:** Instant update button in the panel menu.
-- **Copy IP:** Copy the current public IP to the clipboard from the panel menu.
+- **Copy IP:** Copy the current public IP to the clipboard from the panel menu (clipboard access is used only when you click the copy button).
 - **Customizable Appearance:** Change background color, text color, or pick from predefined color presets.
 - **Lightweight:** Written in GJS using native `Soup3` for network requests.
 
