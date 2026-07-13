@@ -37,8 +37,8 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     const bgEntry = new Gtk.Entry({
       text: settings.get_string("background-color"),
-      width_chars: 10,
-      max_width_chars: 14,
+      width_chars: 8,
+      max_width_chars: 12,
       valign: Gtk.Align.CENTER,
     });
 
@@ -88,8 +88,8 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     // Text Color Row
     const textRow = new Adw.ActionRow({
-      title: "Text & Icon Color",
-      subtitle: "Choose a color for the IP text and icons",
+      title: "Text Color",
+      subtitle: "Color for the IP text",
     });
 
     const textBox = new Gtk.Box({
@@ -100,8 +100,8 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     const textEntry = new Gtk.Entry({
       text: settings.get_string("text-color"),
-      width_chars: 10,
-      max_width_chars: 14,
+      width_chars: 8,
+      max_width_chars: 12,
       valign: Gtk.Align.CENTER,
     });
 
