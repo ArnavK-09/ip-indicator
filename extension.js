@@ -99,15 +99,22 @@ export default class IPIndicatorExtension extends Extension {
     this._session?.abort();
     this._session = null;
 
+    this._refreshItem?.destroy();
+    this._refreshItem = null;
+
+    this._copyItem?.destroy();
+    this._copyItem = null;
+
+    this._label?.destroy();
+    this._label = null;
+
+    this._box?.destroy();
+    this._box = null;
+
     this._indicator?.destroy();
     this._indicator = null;
 
     this._trackedDevices = null;
-
-    this._box = null;
-    this._label = null;
-    this._refreshItem = null;
-    this._copyItem = null;
     this._currentIP = null;
   }
 
