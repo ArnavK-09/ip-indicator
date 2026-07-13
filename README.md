@@ -18,7 +18,7 @@
 
 **IP Indicator** is a minimalist GNOME Shell extension that keeps you aware of your current public IP address without opening a terminal or browser. It sits in your system panel and refreshes automatically when your network state changes using `icanhazip.com`.
 
-This is a fork of the original IP Indicator extension, now maintained under **ArnavK-09** with updates and small improvements.
+This is a fork of the <a href="https://github.com/vjects/ip-indicator">original IP Indicator extension</a>, now maintained under **ArnavK-09** with updates and small improvements.
 
 ## Features
 
