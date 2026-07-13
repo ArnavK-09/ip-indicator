@@ -57,10 +57,3 @@ Open the extension settings via the **GNOME Extensions** app or by right-clickin
 
 - **Appearance:** Adjust background color, text color, or choose a preset theme.
 - **Behavior:** Switch between IPv4 and IPv6 display.
-
-## Building & Packaging
-
-```bash
-cd ip-indicator
-zip -r ip-indicator@ArnavK-09.zip . -x "*.git*"
-```
