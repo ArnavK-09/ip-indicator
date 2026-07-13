@@ -1,195 +1,245 @@
-import Adw from 'gi://Adw';
-import Gdk from 'gi://Gdk';
-import Gio from 'gi://Gio';
-import Gtk from 'gi://Gtk';
-import { ExtensionPreferences } from 'resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js';
+import Adw from "gi://Adw";
+import Gdk from "gi://Gdk";
+import Gio from "gi://Gio";
+import Gtk from "gi://Gtk";
+import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
 export default class IPIndicatorPreferences extends ExtensionPreferences {
-    fillPreferencesWindow(window) {
-        const settings = this.getSettings();
+  fillPreferencesWindow(window) {
+    const settings = this.getSettings();
 
-        // Create preferences page
-        const page = new Adw.PreferencesPage({
-            title: 'Settings',
-            icon_name: 'preferences-system-symbolic',
-        });
+    // Create preferences page
+    const page = new Adw.PreferencesPage({
+      title: "Settings",
+      icon_name: "preferences-system-symbolic",
+    });
 
-        // Group 1: Appearance
-        const stylingGroup = new Adw.PreferencesGroup({
-            title: 'Appearance',
-            description: 'Customize the appearance of the IP Indicator in the top panel',
-        });
-        page.add(stylingGroup);
+    // Group 1: Appearance
+    const stylingGroup = new Adw.PreferencesGroup({
+      title: "Appearance",
+      description:
+        "Customize the appearance of the IP Indicator in the top panel",
+    });
+    page.add(stylingGroup);
 
-        // Background Color Row
-        const bgRow = new Adw.ActionRow({
-            title: 'Background Color',
-            subtitle: 'Choose a background color for the indicator pill (HEX or RGBA)',
-        });
-        
-        const bgBox = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            spacing: 6,
-            valign: Gtk.Align.CENTER,
-        });
+    // Background Color Row
+    const bgRow = new Adw.ActionRow({
+      title: "Background Color",
+      subtitle:
+        "Choose a background color for the indicator pill (HEX or RGBA)",
+    });
 
-        const bgEntry = new Gtk.Entry({
-            text: settings.get_string('background-color'),
-            width_chars: 18,
-            valign: Gtk.Align.CENTER,
-        });
+    const bgBox = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      spacing: 6,
+      valign: Gtk.Align.CENTER,
+    });
 
-        const bgButton = new Gtk.ColorButton({
-            valign: Gtk.Align.CENTER,
-            use_alpha: true,
-        });
-        
-        let rgbaBg = new Gdk.RGBA();
-        rgbaBg.parse(settings.get_string('background-color'));
-        bgButton.set_rgba(rgbaBg);
+    const bgEntry = new Gtk.Entry({
+      text: settings.get_string("background-color"),
+      width_chars: 12,
+      hexpand: true,
+      max_width_chars: 18,
+      valign: Gtk.Align.CENTER,
+    });
 
-        bgEntry.connect('changed', () => {
-            const text = bgEntry.get_text();
-            let rgba = new Gdk.RGBA();
-            if (rgba.parse(text)) {
-                settings.set_string('background-color', text);
-                bgButton.set_rgba(rgba);
-            }
-        });
+    const bgButton = new Gtk.ColorButton({
+      valign: Gtk.Align.CENTER,
+      use_alpha: true,
+    });
 
-        bgButton.connect('color-set', () => {
-            let color = bgButton.get_rgba().to_string();
-            bgEntry.set_text(color);
-            settings.set_string('background-color', color);
-        });
+    let rgbaBg = new Gdk.RGBA();
+    rgbaBg.parse(settings.get_string("background-color"));
+    bgButton.set_rgba(rgbaBg);
 
-        bgBox.append(bgEntry);
-        bgBox.append(bgButton);
-        bgRow.add_suffix(bgBox);
-        stylingGroup.add(bgRow);
+    bgEntry.connect("changed", () => {
+      const text = bgEntry.get_text();
+      let rgba = new Gdk.RGBA();
+      if (rgba.parse(text)) {
+        settings.set_string("background-color", text);
+        bgButton.set_rgba(rgba);
+      }
+    });
 
-        // Text Color Row
-        const textRow = new Adw.ActionRow({
-            title: 'Text & Icon Color',
-            subtitle: 'Choose a color for the IP text and icons',
-        });
+    bgButton.connect("color-set", () => {
+      let color = bgButton.get_rgba().to_string();
+      bgEntry.set_text(color);
+      settings.set_string("background-color", color);
+    });
 
-        const textBox = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            spacing: 6,
-            valign: Gtk.Align.CENTER,
-        });
+    bgBox.append(bgEntry);
+    bgBox.append(bgButton);
+    bgRow.add_suffix(bgBox);
+    stylingGroup.add(bgRow);
 
-        const textEntry = new Gtk.Entry({
-            text: settings.get_string('text-color'),
-            width_chars: 18,
-            valign: Gtk.Align.CENTER,
-        });
+    // Text Color Row
+    const textRow = new Adw.ActionRow({
+      title: "Text & Icon Color",
+      subtitle: "Choose a color for the IP text and icons",
+    });
 
-        const textButton = new Gtk.ColorButton({
-            valign: Gtk.Align.CENTER,
-            use_alpha: true,
-        });
+    const textBox = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      spacing: 6,
+      valign: Gtk.Align.CENTER,
+    });
 
-        let rgbaText = new Gdk.RGBA();
-        rgbaText.parse(settings.get_string('text-color'));
-        textButton.set_rgba(rgbaText);
+    const textEntry = new Gtk.Entry({
+      text: settings.get_string("text-color"),
+      width_chars: 12,
+      hexpand: true,
+      max_width_chars: 18,
+      valign: Gtk.Align.CENTER,
+    });
 
-        textEntry.connect('changed', () => {
-            const text = textEntry.get_text();
-            let rgba = new Gdk.RGBA();
-            if (rgba.parse(text)) {
-                settings.set_string('text-color', text);
-                textButton.set_rgba(rgba);
-            }
-        });
+    const textButton = new Gtk.ColorButton({
+      valign: Gtk.Align.CENTER,
+      use_alpha: true,
+    });
 
-        textButton.connect('color-set', () => {
-            let color = textButton.get_rgba().to_string();
-            textEntry.set_text(color);
-            settings.set_string('text-color', color);
-        });
+    let rgbaText = new Gdk.RGBA();
+    rgbaText.parse(settings.get_string("text-color"));
+    textButton.set_rgba(rgbaText);
 
-        textBox.append(textEntry);
-        textBox.append(textButton);
-        textRow.add_suffix(textBox);
-        stylingGroup.add(textRow);
+    textEntry.connect("changed", () => {
+      const text = textEntry.get_text();
+      let rgba = new Gdk.RGBA();
+      if (rgba.parse(text)) {
+        settings.set_string("text-color", text);
+        textButton.set_rgba(rgba);
+      }
+    });
 
-        // Presets Row
-        const presetRow = new Adw.ActionRow({
-            title: 'Professional Color Presets',
-            subtitle: 'Quickly select from one of these elegant color themes',
-        });
-        
-        const presetBox = new Gtk.Box({
-            orientation: Gtk.Orientation.HORIZONTAL,
-            spacing: 8,
-            valign: Gtk.Align.CENTER,
-        });
+    textButton.connect("color-set", () => {
+      let color = textButton.get_rgba().to_string();
+      textEntry.set_text(color);
+      settings.set_string("text-color", color);
+    });
 
-        const presets = [
-            { name: 'Adwaita Blue', bg: 'rgba(53, 132, 228, 1)', text: 'rgba(255, 255, 255, 1)' },
-            { name: 'Glassmorphism', bg: 'rgba(255, 255, 255, 0.15)', text: 'rgba(255, 255, 255, 1)' },
-            { name: 'Sleek Dark', bg: 'rgba(45, 45, 45, 0.85)', text: 'rgba(240, 240, 240, 1)' },
-            { name: 'Emerald', bg: 'rgba(46, 194, 126, 1)', text: 'rgba(255, 255, 255, 1)' },
-            { name: 'Warm Amber', bg: 'rgba(230, 97, 0, 1)', text: 'rgba(255, 255, 255, 1)' },
-        ];
+    textBox.append(textEntry);
+    textBox.append(textButton);
+    textRow.add_suffix(textBox);
+    stylingGroup.add(textRow);
 
-        presets.forEach(p => {
-            const btn = new Gtk.Button({
-                label: p.name,
-            });
-            btn.connect('clicked', () => {
-                bgEntry.set_text(p.bg);
-                textEntry.set_text(p.text);
-                
-                let rgbaB = new Gdk.RGBA();
-                let rgbaT = new Gdk.RGBA();
-                rgbaB.parse(p.bg);
-                rgbaT.parse(p.text);
-                bgButton.set_rgba(rgbaB);
-                textButton.set_rgba(rgbaT);
+    // Presets Row
+    const presetRow = new Adw.ActionRow({
+      title: "Professional Color Presets",
+      subtitle: "Quickly select from one of these elegant color themes",
+    });
 
-                settings.set_string('background-color', p.bg);
-                settings.set_string('text-color', p.text);
-            });
-            presetBox.append(btn);
-        });
-        presetRow.add_suffix(presetBox);
-        stylingGroup.add(presetRow);
+    const presetBox = new Gtk.FlowBox({
+      valign: Gtk.Align.CENTER,
+      homogeneous: true,
+      selection_mode: Gtk.SelectionMode.NONE,
+      column_spacing: 8,
+      row_spacing: 8,
+      max_children_per_line: 2,
+      min_children_per_line: 1,
+    });
 
-        // Group 2: Behavior
-        const behaviorGroup = new Adw.PreferencesGroup({
-            title: 'Behavior',
-            description: 'Configure update frequency and other settings',
-        });
-        page.add(behaviorGroup);
+    const presets = [
+      {
+        name: "Adwaita Blue",
+        bg: "rgba(53, 132, 228, 1)",
+        text: "rgba(255, 255, 255, 1)",
+      },
+      {
+        name: "Glassmorphism",
+        bg: "rgba(255, 255, 255, 0.15)",
+        text: "rgba(255, 255, 255, 1)",
+      },
+      {
+        name: "Sleek Dark",
+        bg: "rgba(45, 45, 45, 0.85)",
+        text: "rgba(240, 240, 240, 1)",
+      },
+      {
+        name: "Emerald",
+        bg: "rgba(46, 194, 126, 1)",
+        text: "rgba(255, 255, 255, 1)",
+      },
+      {
+        name: "Warm Amber",
+        bg: "rgba(230, 97, 0, 1)",
+        text: "rgba(255, 255, 255, 1)",
+      },
+    ];
 
-        const intervalRow = new Adw.ActionRow({
-            title: 'Update Interval (seconds)',
-            subtitle: 'Frequency of IP updates (minimum 30 seconds)',
-        });
-        
-        const intervalAdjustment = new Gtk.Adjustment({
-            lower: 30,
-            upper: 3600,
-            step_increment: 10,
-            page_increment: 60,
-            value: settings.get_int('update-interval'),
-        });
-        
-        const intervalSpinButton = new Gtk.SpinButton({
-            adjustment: intervalAdjustment,
-            valign: Gtk.Align.CENTER,
-            numeric: true,
-        });
-        
-        intervalSpinButton.connect('value-changed', () => {
-            settings.set_int('update-interval', intervalSpinButton.get_value_as_int());
-        });
-        intervalRow.add_suffix(intervalSpinButton);
-        behaviorGroup.add(intervalRow);
+    presets.forEach((p) => {
+      const btn = new Gtk.Button({
+        label: p.name,
+        hexpand: true,
+      });
+      btn.connect("clicked", () => {
+        bgEntry.set_text(p.bg);
+        textEntry.set_text(p.text);
 
-        window.add(page);
-    }
+        let rgbaB = new Gdk.RGBA();
+        let rgbaT = new Gdk.RGBA();
+        rgbaB.parse(p.bg);
+        rgbaT.parse(p.text);
+        bgButton.set_rgba(rgbaB);
+        textButton.set_rgba(rgbaT);
+
+        settings.set_string("background-color", p.bg);
+        settings.set_string("text-color", p.text);
+      });
+      presetBox.append(new Gtk.FlowBoxChild({ child: btn }));
+    });
+    presetRow.add_suffix(presetBox);
+    stylingGroup.add(presetRow);
+
+    // Group 2: Behavior
+    const behaviorGroup = new Adw.PreferencesGroup({
+      title: "Behavior",
+      description: "Configure update frequency and other settings",
+    });
+    page.add(behaviorGroup);
+
+    const intervalRow = new Adw.ActionRow({
+      title: "Update Interval (seconds)",
+      subtitle: "Frequency of IP updates (minimum 30 seconds)",
+    });
+
+    const intervalAdjustment = new Gtk.Adjustment({
+      lower: 30,
+      upper: 3600,
+      step_increment: 10,
+      page_increment: 60,
+      value: settings.get_int("update-interval"),
+    });
+
+    const intervalSpinButton = new Gtk.SpinButton({
+      adjustment: intervalAdjustment,
+      valign: Gtk.Align.CENTER,
+      numeric: true,
+    });
+
+    intervalSpinButton.connect("value-changed", () => {
+      settings.set_int(
+        "update-interval",
+        intervalSpinButton.get_value_as_int(),
+      );
+    });
+    intervalRow.add_suffix(intervalSpinButton);
+    behaviorGroup.add(intervalRow);
+
+    // IP Version Row
+    const ipVersionRow = new Adw.ComboRow({
+      title: "IP Version",
+      subtitle: "Choose whether to display your public IPv4 or IPv6 address",
+      model: new Gtk.StringList({ strings: ["IPv4", "IPv6"] }),
+    });
+
+    ipVersionRow.selected =
+      settings.get_string("ip-version") === "ipv6" ? 1 : 0;
+
+    ipVersionRow.connect("notify::selected", () => {
+      const value = ipVersionRow.selected === 1 ? "ipv6" : "ipv4";
+      settings.set_string("ip-version", value);
+    });
+    behaviorGroup.add(ipVersionRow);
+
+    window.add(page);
+  }
 }

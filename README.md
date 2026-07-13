@@ -1,83 +1,66 @@
 <p align="center">
-  <img src="https://ui-avatars.com/api/?name=IP+Indicator&background=0D8ABC&color=fff&size=128&rounded=true" alt="IP Indicator Logo">
+    <img alt="hero" width="450" src="https://emoji-route.deno.dev/png/🛜" />
 </p>
 
 <h1 align="center">IP Indicator</h1>
 
 <p align="center">
-  <strong>A Sleek, Lightweight GNOME Shell Extension</strong><br>
-  Monitor and display your public IP address directly in your top panel.
+    Display your public IP in Gnome topbar
+</p>
+
+<p align="center">
+  <em>Maintained fork by <a href="https://github.com/ArnavK-09">ArnavK-09</a></em>
 </p>
 
 ---
 
-## 📖 Table of Contents
-- [Overview](#-overview)
-- [Features](#-features)
-- [Requirements](#-requirements)
-- [Installation](#-installation)
-- [Configuration](#-configuration)
-- [Building & Packaging](#-building--packaging)
-- [Copyright & License](#-copyright--license)
+## Overview
 
----
+**IP Indicator** is a minimalist GNOME Shell extension that keeps you aware of your current public IP address without opening a terminal or browser. It sits in your system panel and refreshes automatically when your network state changes using `icanhazip.com`.
 
-## 🚀 Overview
+This is a fork of the original IP Indicator extension, now maintained under **ArnavK-09** with updates and small improvements.
 
-**IP Indicator** is a minimalist and elegant GNOME Shell extension designed to keep you aware of your current public IP address without opening a terminal or a browser. It sits quietly in your system panel and periodically updates your IP using `icanhazip.com`.
+## Features
 
-## ✨ Features
+- **IPv4 / IPv6 Toggle:** Choose whether to display your public IPv4 or IPv6 address from the settings.
+- **State-Based IP Monitoring:** Refreshes your IP when network connectivity, primary connection, wireless state, or device state changes — no wasteful polling.
+- **Manual Refresh:** Instant update button in the panel menu.
+- **Copy IP:** Copy the current public IP to the clipboard from the panel menu.
+- **Customizable Appearance:** Change background color, text color, or pick from predefined color presets.
+- **Lightweight:** Written in GJS using native `Soup3` for network requests.
 
-- **Real-Time IP Monitoring:** Automatically fetches and displays your public IPv4/IPv6 address.
-- **Manual Refresh:** Instant update button right in the panel.
-- **Professional Aesthetics:** Clean UI with native GNOME look-and-feel.
-- **Customizable Themes:** Modify background and text colors or choose from predefined "Professional Color Presets" (Glassmorphism, Sleek Dark, Emerald, etc.).
-- **Zero Heavy Dependencies:** Written entirely in GJS and utilizes native `Soup3` for ultra-fast, secure network requests (no `curl` or external processes needed).
+## Requirements
 
-## ⚙️ Requirements
+- **GNOME Shell:** `45`, `46`, `47`, `48`, `49`, `50`
 
-- **GNOME Shell:** `45`, `46`, `47`, `48`
-
-## 📦 Installation
-
-### Official GNOME Extensions Store (Recommended)
-You can install this extension directly from the GNOME Extensions website:
-[IP Indicator on GNOME Extensions](https://extensions.gnome.org/extension/10272/ip-indicator/)
+## Installation
 
 ### Manual Installation
-1. Clone this repository or download the ZIP file:
+
+1. Clone this repository:
    ```bash
-   git clone https://github.com/vjects/ip-indicator.git
+   git clone https://github.com/ArnavK-09/ip-indicator.git
    ```
 2. Move the directory to your local extensions folder:
    ```bash
-   mv ip-indicator ~/.local/share/gnome-shell/extensions/ip-indicator@vos
+   mv ip-indicator ~/.local/share/gnome-shell/extensions/ip-indicator@ArnavK-09
    ```
-3. Restart GNOME Shell (Press `Alt+F2`, type `r`, and hit `Enter` on X11, or log out and log back in on Wayland).
-4. Enable the extension using the **GNOME Extensions** app or via terminal:
+3. Restart GNOME Shell (press `Alt+F2`, type `r`, and hit `Enter` on X11, or log out and back in on Wayland).
+4. Enable the extension:
    ```bash
-   gnome-extensions enable ip-indicator@vos
+   gnome-extensions enable ip-indicator@ArnavK-09
    ```
 
-## 🛠 Configuration
+## Configuration
 
-Right-click the indicator in your panel or use the **GNOME Extensions** app to open the Settings. 
+Open the extension settings via the **GNOME Extensions** app or by right-clicking the indicator.
 
-- **Appearance:** Adjust background color, text color, and icon color using HEX/RGBA or pick from built-in themes.
-- **Behavior:** Set the update interval (minimum 30 seconds to respect API rate limits).
+- **Appearance:** Adjust background color, text color, or choose a preset theme.
+- **Behavior:** Switch between IPv4 and IPv6 display.
 
-## 🔨 Building & Packaging
+## Building & Packaging
 
-To package the extension for distribution:
 ```bash
 cd ip-indicator
-zip -r ip-indicator@vos.zip . -x "*.git*"
+zip -r ip-indicator@ArnavK-09.zip . -x "*.git*"
 ```
-
----
-
-<p align="center">
-  <strong>&copy; 2026 VJECTS Ecosystem. All rights reserved.</strong><br>
-  <em>Crafted with precision by <a href="https://vjects.com">VJECTS.com</a></em><br>
-  Built with a Warrior Mindset.
-</p>

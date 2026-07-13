@@ -1,10 +1,8 @@
 {
-  "uuid": "ip-indicator@vos",
+  "uuid": "ip-indicator@ArnavK-09",
   "name": "IP Indicator",
-  "description": "A sleek, lightweight GNOME Shell extension to monitor and display your public IP address in the panel (using icanhazip.com). Features auto-refresh, customizable color themes, and manual updates. Crafted by VJECTS (vjects.com).",
-  "shell-version": [ "45", "46", "47", "48" ],
+  "description": "Display your public IP in Gnome topbar...",
+  "shell-version": ["45", "46", "47", "48", "49", "50"],
   "settings-schema": "org.gnome.shell.extensions.ip-indicator",
-  "url": "https://github.com/vjects/ip-indicator"
+  "url": "https://github.com/ArnavK-09/ip-indicator"
 }
-
-

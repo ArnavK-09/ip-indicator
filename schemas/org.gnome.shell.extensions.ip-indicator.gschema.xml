@@ -13,5 +13,10 @@
       <default>300</default>
       <summary>Update interval in seconds</summary>
     </key>
+    <key name="ip-version" type="s">
+      <default>'ipv4'</default>
+      <summary>IP version to display</summary>
+      <description>Fetch either the public IPv4 address (ipv4) or the public IPv6 address (ipv6).</description>
+    </key>
   </schema>
 </schemalist>
