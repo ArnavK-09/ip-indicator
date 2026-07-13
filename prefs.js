@@ -157,19 +157,19 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
         text: "rgba(255, 255, 255, 1)",
       },
       {
-        name: "Glassmorphism",
-        bg: "rgba(255, 255, 255, 0.15)",
+        name: "Adwaita Purple",
+        bg: "rgba(145, 65, 172, 1)",
         text: "rgba(255, 255, 255, 1)",
       },
       {
-        name: "Sleek Dark",
-        bg: "rgba(45, 45, 45, 0.85)",
-        text: "rgba(240, 240, 240, 1)",
+        name: "Adwaita Teal",
+        bg: "rgba(33, 144, 164, 1)",
+        text: "rgba(255, 255, 255, 1)",
       },
       {
-        name: "Warm Amber",
-        bg: "rgba(230, 97, 0, 1)",
-        text: "rgba(255, 255, 255, 1)",
+        name: "Clean Light",
+        bg: "rgba(250, 250, 250, 0.95)",
+        text: "rgba(36, 36, 36, 1)",
       },
     ];
 

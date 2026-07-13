@@ -123,16 +123,16 @@ export default class IPIndicatorExtension extends Extension {
       ? backgroundColor
       : "transparent";
 
-    const backgroundStyle =
-      safeBgColor === "transparent"
-        ? ""
-        : `background-color: ${safeBgColor}; padding: 0 8px;`;
-
     this._box.set_style(`
             color: ${safeTextColor};
-            ${backgroundStyle}
             border-radius: 14px;
-            margin: 4px 0;
+        `);
+
+    this._label.set_style(`
+            color: ${safeTextColor};
+            background-color: ${safeBgColor};
+            border-radius: 14px;
+            padding: 1px 8px;
         `);
   }
 
