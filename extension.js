@@ -3,7 +3,7 @@ import Clutter from "gi://Clutter";
 import Gio from "gi://Gio";
 import GLib from "gi://GLib";
 import NM from "gi://NM";
-import Soup from "gi://Soup?version=3.0";
+import Soup from "gi://Soup";
 
 import * as Main from "resource:///org/gnome/shell/ui/main.js";
 import * as PanelMenu from "resource:///org/gnome/shell/ui/panelMenu.js";
