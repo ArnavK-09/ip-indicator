@@ -1,5 +1,5 @@
 <p align="center">
-    <img alt="hero" width="450" src="https://emoji-route.deno.dev/png/🛜" />
+    <img alt="hero" width="450" src="https://emoji-route.vercel.app/png/🛜" />
 </p>
 
 <h1 align="center">IP Indicator by ArnavK-09</h1>
