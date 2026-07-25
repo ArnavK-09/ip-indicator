@@ -15,5 +15,25 @@
       <summary>IP version to display</summary>
       <description>Fetch either the public IPv4 address (ipv4) or the public IPv6 address (ipv6).</description>
     </key>
+    <key name="padding-x" type="i">
+      <default>8</default>
+      <summary>Horizontal padding</summary>
+      <description>Left and right padding, in pixels, applied inside the IP indicator label.</description>
+    </key>
+    <key name="padding-y" type="i">
+      <default>1</default>
+      <summary>Vertical padding</summary>
+      <description>Top and bottom padding, in pixels, applied inside the IP indicator label.</description>
+    </key>
+    <key name="margin-x" type="i">
+      <default>4</default>
+      <summary>Horizontal margin</summary>
+      <description>Left and right margin, in pixels, applied around the IP indicator label.</description>
+    </key>
+    <key name="margin-y" type="i">
+      <default>0</default>
+      <summary>Vertical margin</summary>
+      <description>Top and bottom margin, in pixels, applied around the IP indicator label.</description>
+    </key>
   </schema>
 </schemalist>

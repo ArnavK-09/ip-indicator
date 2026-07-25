@@ -197,7 +197,79 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
     presetRow.add_suffix(presetBox);
     stylingGroup.add(presetRow);
 
-    // Group 2: Behavior
+    // Group 2: Spacing
+    const spacingGroup = new Adw.PreferencesGroup({
+      title: "Spacing",
+      description:
+        "Adjust padding and margin around the IP indicator (in pixels)",
+    });
+    page.add(spacingGroup);
+
+    const makeSpacingRow = ({ key, title, subtitle, lower, upper, defaultValue }) => {
+      const row = new Adw.SpinRow({
+        title,
+        subtitle,
+        adjustment: new Gtk.Adjustment({
+          lower,
+          upper,
+          step_increment: 1,
+          page_increment: 5,
+          value: settings.get_int(key) ?? defaultValue,
+        }),
+      });
+
+      row.connect("notify::value", () => {
+        settings.set_int(key, row.value);
+      });
+
+      return row;
+    };
+
+    spacingGroup.add(
+      makeSpacingRow({
+        key: "padding-x",
+        title: "Horizontal Padding",
+        subtitle: "Left and right padding inside the IP pill",
+        lower: 0,
+        upper: 50,
+        defaultValue: 8,
+      }),
+    );
+
+    spacingGroup.add(
+      makeSpacingRow({
+        key: "padding-y",
+        title: "Vertical Padding",
+        subtitle: "Top and bottom padding inside the IP pill",
+        lower: 0,
+        upper: 50,
+        defaultValue: 1,
+      }),
+    );
+
+    spacingGroup.add(
+      makeSpacingRow({
+        key: "margin-x",
+        title: "Horizontal Margin",
+        subtitle: "Left and right spacing around the IP text",
+        lower: 0,
+        upper: 50,
+        defaultValue: 4,
+      }),
+    );
+
+    spacingGroup.add(
+      makeSpacingRow({
+        key: "margin-y",
+        title: "Vertical Margin",
+        subtitle: "Top and bottom spacing around the IP text",
+        lower: 0,
+        upper: 50,
+        defaultValue: 0,
+      }),
+    );
+
+    // Group 3: Behavior
     const behaviorGroup = new Adw.PreferencesGroup({
       title: "Behavior",
       description: "Configure network-based IP detection behavior",

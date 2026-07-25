@@ -35,6 +35,15 @@ This is a fork of the <a href="https://github.com/vjects/ip-indicator">original 
 
 ## Installation
 
+
+### Packaging
+
+Zip the codebase, excluding unnecessary files:
+
+```bash
+zip -r ip-indicator@ArnavK-09.zip . -x "*.git*" -x ".github/*" -x "screenshots/*" -x "README.md" -x "package.json" -x "LICENSE" -x "*.ox*" -x ".gitignore"
+```
+
 ### Manual Installation
 
 1. Clone this repository:
@@ -57,3 +66,4 @@ Open the extension settings via the **GNOME Extensions** app or by right-clickin
 
 - **Appearance:** Adjust background color, text color, or choose a preset theme.
 - **Behavior:** Switch between IPv4 and IPv6 display.
+

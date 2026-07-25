@@ -28,7 +28,7 @@ export default class IPIndicatorExtension extends Extension {
     this._label = new St.Label({
       text: "offline",
       y_align: Clutter.ActorAlign.CENTER,
-      style: "font-weight:bold; margin-left:4px; margin-right:4px;",
+      style: "font-weight:bold;",
     });
 
     this._box.add_child(this._label);
@@ -64,6 +64,14 @@ export default class IPIndicatorExtension extends Extension {
       "changed::background-color",
       () => this._applyStyles(),
       "changed::text-color",
+      () => this._applyStyles(),
+      "changed::padding-x",
+      () => this._applyStyles(),
+      "changed::padding-y",
+      () => this._applyStyles(),
+      "changed::margin-x",
+      () => this._applyStyles(),
+      "changed::margin-y",
       () => this._applyStyles(),
       "changed::ip-version",
       () => this._updateIP(true),
@@ -119,13 +127,18 @@ export default class IPIndicatorExtension extends Extension {
   }
 
   _applyStyles() {
-    if (!this._box || !this._settings) return;
+    if (!this._box || !this._label || !this._settings) return;
 
     const textColor = this._settings.get_string("text-color");
     const safeTextColor = textColor || "rgba(255, 255, 255, 1)";
 
     const backgroundColor = this._settings.get_string("background-color");
     const safeBgColor = backgroundColor || "transparent";
+
+    const paddingX = this._settings.get_int("padding-x");
+    const paddingY = this._settings.get_int("padding-y");
+    const marginX = this._settings.get_int("margin-x");
+    const marginY = this._settings.get_int("margin-y");
 
     this._box.set_style(`
             color: ${safeTextColor};
@@ -136,7 +149,8 @@ export default class IPIndicatorExtension extends Extension {
             color: ${safeTextColor};
             background-color: ${safeBgColor};
             border-radius: 14px;
-            padding: 1px 8px;
+            padding: ${paddingY}px ${paddingX}px;
+            margin: ${marginY}px ${marginX}px;
         `);
   }
 
