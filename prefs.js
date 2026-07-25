@@ -1,6 +1,5 @@
 import Adw from "gi://Adw";
 import Gdk from "gi://Gdk";
-import Gio from "gi://Gio";
 import Gtk from "gi://Gtk";
 import { ExtensionPreferences } from "resource:///org/gnome/Shell/Extensions/js/extensions/prefs.js";
 
@@ -8,133 +7,117 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
   fillPreferencesWindow(window) {
     const settings = this.getSettings();
 
-    // Create preferences page
     const page = new Adw.PreferencesPage({
       title: "Settings",
       icon_name: "preferences-system-symbolic",
     });
 
-    // Group 1: Appearance
-    const stylingGroup = new Adw.PreferencesGroup({
+    page.add(this._buildAppearanceGroup(settings));
+    page.add(this._buildSpacingGroup(settings));
+    page.add(this._buildBehaviorGroup(settings));
+
+    window.add(page);
+  }
+
+  _createColorRow(
+    settings,
+    {
+      title,
+      subtitle,
+      settingsKey,
+      allowReset = false,
+      resetValue = "transparent",
+      resetRgba,
+    },
+  ) {
+    const row = new Adw.ActionRow({ title, subtitle });
+
+    const box = new Gtk.Box({
+      orientation: Gtk.Orientation.HORIZONTAL,
+      spacing: 6,
+      valign: Gtk.Align.CENTER,
+    });
+
+    const entry = new Gtk.Entry({
+      text: settings.get_string(settingsKey),
+      width_chars: 8,
+      max_width_chars: 12,
+      valign: Gtk.Align.CENTER,
+    });
+
+    const button = new Gtk.ColorButton({
+      valign: Gtk.Align.CENTER,
+      use_alpha: true,
+    });
+
+    const initialRgba = new Gdk.RGBA();
+    if (initialRgba.parse(settings.get_string(settingsKey)))
+      button.set_rgba(initialRgba);
+
+    const applyText = (text) => {
+      const rgba = new Gdk.RGBA();
+      if (!rgba.parse(text)) return false;
+      settings.set_string(settingsKey, text);
+      button.set_rgba(rgba);
+      return true;
+    };
+
+    entry.connect("changed", () => applyText(entry.get_text()));
+
+    button.connect("color-set", () => {
+      const color = button.get_rgba().to_string();
+      entry.set_text(color);
+      settings.set_string(settingsKey, color);
+    });
+
+    if (allowReset) {
+      const resetButton = new Gtk.Button({
+        icon_name: "edit-clear-symbolic",
+        valign: Gtk.Align.CENTER,
+        tooltip_text: `Reset to ${resetValue}`,
+      });
+      resetButton.connect("clicked", () => {
+        settings.set_string(settingsKey, resetValue);
+        entry.set_text(resetValue);
+        const rgba = new Gdk.RGBA();
+        if (rgba.parse(resetRgba ?? resetValue)) button.set_rgba(rgba);
+      });
+      box.append(resetButton);
+    }
+
+    box.prepend(entry);
+    box.insert_child_after(button, entry);
+
+    row.add_suffix(box);
+    return { row, setValue: applyText };
+  }
+
+  _buildAppearanceGroup(settings) {
+    const group = new Adw.PreferencesGroup({
       title: "Appearance",
       description:
         "Customize the appearance of the IP Indicator in the top panel",
     });
-    page.add(stylingGroup);
 
-    // Background Color Row
-    const bgRow = new Adw.ActionRow({
+    const bg = this._createColorRow(settings, {
       title: "Background Color",
       subtitle:
         "Choose a background color for the indicator pill (HEX or RGBA)",
+      settingsKey: "background-color",
+      allowReset: true,
+      resetValue: "transparent",
+      resetRgba: "rgba(255, 255, 255, 0)",
     });
+    group.add(bg.row);
 
-    const bgBox = new Gtk.Box({
-      orientation: Gtk.Orientation.HORIZONTAL,
-      spacing: 6,
-      valign: Gtk.Align.CENTER,
-    });
-
-    const bgEntry = new Gtk.Entry({
-      text: settings.get_string("background-color"),
-      width_chars: 8,
-      max_width_chars: 12,
-      valign: Gtk.Align.CENTER,
-    });
-
-    const bgButton = new Gtk.ColorButton({
-      valign: Gtk.Align.CENTER,
-      use_alpha: true,
-    });
-
-    const resetBgButton = new Gtk.Button({
-      icon_name: "edit-clear-symbolic",
-      valign: Gtk.Align.CENTER,
-      tooltip_text: "Reset background to transparent",
-    });
-
-    let rgbaBg = new Gdk.RGBA();
-    const currentBg = settings.get_string("background-color");
-    if (rgbaBg.parse(currentBg)) bgButton.set_rgba(rgbaBg);
-
-    bgEntry.connect("changed", () => {
-      const text = bgEntry.get_text();
-      let rgba = new Gdk.RGBA();
-      if (rgba.parse(text)) {
-        settings.set_string("background-color", text);
-        bgButton.set_rgba(rgba);
-      }
-    });
-
-    bgButton.connect("color-set", () => {
-      let color = bgButton.get_rgba().to_string();
-      bgEntry.set_text(color);
-      settings.set_string("background-color", color);
-    });
-
-    resetBgButton.connect("clicked", () => {
-      settings.set_string("background-color", "transparent");
-      bgEntry.set_text("transparent");
-      let rgba = new Gdk.RGBA();
-      rgba.parse("rgba(255, 255, 255, 0)");
-      bgButton.set_rgba(rgba);
-    });
-
-    bgBox.append(bgEntry);
-    bgBox.append(bgButton);
-    bgBox.append(resetBgButton);
-    bgRow.add_suffix(bgBox);
-    stylingGroup.add(bgRow);
-
-    // Text Color Row
-    const textRow = new Adw.ActionRow({
+    const fg = this._createColorRow(settings, {
       title: "Text Color",
       subtitle: "Color for the IP text",
+      settingsKey: "text-color",
     });
+    group.add(fg.row);
 
-    const textBox = new Gtk.Box({
-      orientation: Gtk.Orientation.HORIZONTAL,
-      spacing: 6,
-      valign: Gtk.Align.CENTER,
-    });
-
-    const textEntry = new Gtk.Entry({
-      text: settings.get_string("text-color"),
-      width_chars: 8,
-      max_width_chars: 12,
-      valign: Gtk.Align.CENTER,
-    });
-
-    const textButton = new Gtk.ColorButton({
-      valign: Gtk.Align.CENTER,
-      use_alpha: true,
-    });
-
-    let rgbaText = new Gdk.RGBA();
-    rgbaText.parse(settings.get_string("text-color"));
-    textButton.set_rgba(rgbaText);
-
-    textEntry.connect("changed", () => {
-      const text = textEntry.get_text();
-      let rgba = new Gdk.RGBA();
-      if (rgba.parse(text)) {
-        settings.set_string("text-color", text);
-        textButton.set_rgba(rgba);
-      }
-    });
-
-    textButton.connect("color-set", () => {
-      let color = textButton.get_rgba().to_string();
-      textEntry.set_text(color);
-      settings.set_string("text-color", color);
-    });
-
-    textBox.append(textEntry);
-    textBox.append(textButton);
-    textRow.add_suffix(textBox);
-    stylingGroup.add(textRow);
-
-    // Presets Row
+    // Presets
     const presetRow = new Adw.ActionRow({
       title: "Color Presets",
       subtitle: "Quickly select from one of these elegant color themes",
@@ -173,39 +156,35 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
       },
     ];
 
-    presets.forEach((p) => {
-      const btn = new Gtk.Button({
-        label: p.name,
-        hexpand: true,
-      });
+    for (const preset of presets) {
+      const btn = new Gtk.Button({ label: preset.name, hexpand: true });
       btn.connect("clicked", () => {
-        bgEntry.set_text(p.bg);
-        textEntry.set_text(p.text);
-
-        let rgbaB = new Gdk.RGBA();
-        let rgbaT = new Gdk.RGBA();
-        rgbaB.parse(p.bg);
-        rgbaT.parse(p.text);
-        bgButton.set_rgba(rgbaB);
-        textButton.set_rgba(rgbaT);
-
-        settings.set_string("background-color", p.bg);
-        settings.set_string("text-color", p.text);
+        bg.setValue(preset.bg);
+        fg.setValue(preset.text);
       });
       presetBox.append(new Gtk.FlowBoxChild({ child: btn }));
-    });
+    }
     presetRow.add_suffix(presetBox);
-    stylingGroup.add(presetRow);
+    group.add(presetRow);
 
-    // Group 2: Spacing
-    const spacingGroup = new Adw.PreferencesGroup({
+    return group;
+  }
+
+  _buildSpacingGroup(settings) {
+    const group = new Adw.PreferencesGroup({
       title: "Spacing",
       description:
         "Adjust padding and margin around the IP indicator (in pixels)",
     });
-    page.add(spacingGroup);
 
-    const makeSpacingRow = ({ key, title, subtitle, lower, upper, defaultValue }) => {
+    const makeSpinRow = ({
+      key,
+      title,
+      subtitle,
+      lower,
+      upper,
+      defaultValue,
+    }) => {
       const row = new Adw.SpinRow({
         title,
         subtitle,
@@ -214,69 +193,63 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
           upper,
           step_increment: 1,
           page_increment: 5,
-          value: settings.get_int(key) ?? defaultValue,
+          value: settings.get_int(key) || defaultValue,
         }),
       });
 
-      row.connect("notify::value", () => {
-        settings.set_int(key, row.value);
-      });
-
+      row.connect("notify::value", () => settings.set_int(key, row.value));
       return row;
     };
 
-    spacingGroup.add(
-      makeSpacingRow({
+    const fields = [
+      {
         key: "padding-x",
         title: "Horizontal Padding",
         subtitle: "Left and right padding inside the IP pill",
-        lower: 0,
-        upper: 50,
-        defaultValue: 8,
-      }),
-    );
-
-    spacingGroup.add(
-      makeSpacingRow({
+        default: 8,
+      },
+      {
         key: "padding-y",
         title: "Vertical Padding",
         subtitle: "Top and bottom padding inside the IP pill",
-        lower: 0,
-        upper: 50,
-        defaultValue: 1,
-      }),
-    );
-
-    spacingGroup.add(
-      makeSpacingRow({
+        default: 1,
+      },
+      {
         key: "margin-x",
         title: "Horizontal Margin",
         subtitle: "Left and right spacing around the IP text",
-        lower: 0,
-        upper: 50,
-        defaultValue: 4,
-      }),
-    );
-
-    spacingGroup.add(
-      makeSpacingRow({
+        default: 4,
+      },
+      {
         key: "margin-y",
         title: "Vertical Margin",
         subtitle: "Top and bottom spacing around the IP text",
-        lower: 0,
-        upper: 50,
-        defaultValue: 0,
-      }),
-    );
+        default: 0,
+      },
+    ];
 
-    // Group 3: Behavior
-    const behaviorGroup = new Adw.PreferencesGroup({
+    for (const f of fields) {
+      group.add(
+        makeSpinRow({
+          key: f.key,
+          title: f.title,
+          subtitle: f.subtitle,
+          lower: 0,
+          upper: 50,
+          defaultValue: f.default,
+        }),
+      );
+    }
+
+    return group;
+  }
+
+  _buildBehaviorGroup(settings) {
+    const group = new Adw.PreferencesGroup({
       title: "Behavior",
       description: "Configure network-based IP detection behavior",
     });
-    page.add(behaviorGroup);
 
-    // IP Version Row
     const ipVersionRow = new Adw.ComboRow({
       title: "IP Version",
       subtitle: "Choose whether to display your public IPv4 or IPv6 address",
@@ -285,13 +258,14 @@ export default class IPIndicatorPreferences extends ExtensionPreferences {
 
     ipVersionRow.selected =
       settings.get_string("ip-version") === "ipv6" ? 1 : 0;
-
     ipVersionRow.connect("notify::selected", () => {
-      const value = ipVersionRow.selected === 1 ? "ipv6" : "ipv4";
-      settings.set_string("ip-version", value);
+      settings.set_string(
+        "ip-version",
+        ipVersionRow.selected === 1 ? "ipv6" : "ipv4",
+      );
     });
-    behaviorGroup.add(ipVersionRow);
 
-    window.add(page);
+    group.add(ipVersionRow);
+    return group;
   }
 }

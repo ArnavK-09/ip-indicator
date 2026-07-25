@@ -13,6 +13,7 @@ import { Extension } from "resource:///org/gnome/shell/extensions/extension.js";
 Gio._promisify(NM.Client, "new_async");
 
 const FETCH_TIMEOUT_SECONDS = 5;
+const BORDER_RADIUS_PX = 14;
 
 export default class IPIndicatorExtension extends Extension {
   enable() {
@@ -24,11 +25,9 @@ export default class IPIndicatorExtension extends Extension {
     this._box = new St.BoxLayout({
       style_class: "panel-status-menu-box",
     });
-
     this._label = new St.Label({
       text: "offline",
       y_align: Clutter.ActorAlign.CENTER,
-      style: "font-weight:bold;",
     });
 
     this._box.add_child(this._label);
@@ -142,15 +141,16 @@ export default class IPIndicatorExtension extends Extension {
 
     this._box.set_style(`
             color: ${safeTextColor};
-            border-radius: 14px;
+            border-radius: ${BORDER_RADIUS_PX}px;
         `);
 
     this._label.set_style(`
             color: ${safeTextColor};
             background-color: ${safeBgColor};
-            border-radius: 14px;
+            border-radius: ${BORDER_RADIUS_PX}px;
             padding: ${paddingY}px ${paddingX}px;
             margin: ${marginY}px ${marginX}px;
+            font-weight: bold;
         `);
   }
 
